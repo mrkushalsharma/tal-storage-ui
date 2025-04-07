@@ -30,6 +30,7 @@ const Files = () => {
   const [selectedFileForShare, setSelectedFileForShare] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   const [files, setFiles] = useState<FileItem[]>([]);
   useEffect(() => {
@@ -89,7 +90,7 @@ const Files = () => {
     const size = selectedFile?.size;
     const mimeType = selectedFile?.type;
     const uploadedBy = getUser()?.email;
-    debugger;
+    setUploading(true);
     // get presigned URL
     handleRequest(
       FileUploadService.postApiFileUpload({
@@ -99,30 +100,22 @@ const Files = () => {
         uploadedBy,
       })
     ).then(async (response) => {
-      console.log(response);
-      debugger;
-      if (response.presignedUrl) {
-        const resp = await axios.put(response.presignedUrl, selectedFile, {
-          headers: {
-            "Content-Type": mimeType,
-          },
-        });
-        console.log(resp);
+      try {
+        if (response.presignedUrl) {
+          await axios.put(response.presignedUrl, selectedFile, {
+            headers: {
+              "Content-Type": mimeType,
+            },
+          });
+          fetchFiles(); // Refresh the list
+          setShowModal(false); // Close modal
+          setSelectedFile(null); // Reset file input
+        }
+      } catch (error) {
+        console.error("Upload failed:", error);
+      } finally {
+        setUploading(false); // Stop loading
       }
-
-      // const formData = new FormData();
-      // formData.append("file", selectedFile);
-      // try {
-      //   await axios.post("/api/FileUpload", formData, {
-      //     headers: {
-      //       "Content-Type": "multipart/form-data",
-      //     },
-      //   });
-      //   fetchFiles();
-      //   setShowModal(false);
-      // } catch (error) {
-      //   console.error("Error uploading file", error);
-      // }
     });
   };
 
@@ -221,7 +214,7 @@ const Files = () => {
                         className="btn btn-sm btn-primary me-2"
                         onClick={() => handleDownload(file.s3Url)}
                       >
-                        {isDownloading ? "Downloading ..." : "Download"}
+                        {isDownloading ? "Downloading..." : "Download"}
                       </button>
                       <button
                         className="btn btn-sm btn-danger me-2"
@@ -267,11 +260,26 @@ const Files = () => {
                 <button
                   className="btn btn-secondary"
                   onClick={() => setShowModal(false)}
+                  disabled={uploading}
                 >
                   Cancel
                 </button>
-                <button className="btn btn-primary" onClick={handleUpload}>
-                  Upload
+                <button
+                  className="btn btn-primary"
+                  onClick={handleUpload}
+                  disabled={uploading}
+                >
+                  {uploading ? (
+                    <>
+                      <span
+                        className="spinner-border spinner-border-sm me-2"
+                        role="status"
+                      ></span>
+                      Uploading...
+                    </>
+                  ) : (
+                    "Upload"
+                  )}
                 </button>
               </div>
             </div>
