@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AccountService } from "../services/api-services";
@@ -10,7 +11,7 @@ const Login = () => {
   const navigate = useNavigate();
   const { handleRequest, isLoading } = apiService();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     handleRequest(
       AccountService.postApiAccountLogin({

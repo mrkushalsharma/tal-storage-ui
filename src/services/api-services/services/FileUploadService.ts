@@ -70,4 +70,15 @@ requestBody?: ShareFileRequest,
         });
     }
 
+    /**
+     * @returns any OK
+     * @throws ApiError
+     */
+    public static getApiFileUploadFilesCount(): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/FileUpload/files_count',
+        });
+    }
+
 }

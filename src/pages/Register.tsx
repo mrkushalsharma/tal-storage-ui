@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import apiService from "../hooks/apiService";
@@ -12,7 +13,7 @@ const Register = () => {
   const navigate = useNavigate();
   const { handleRequest, isLoading } = apiService();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     if (password !== confirmPassword) {
       alert("Passwords do not match");

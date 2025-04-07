@@ -3,7 +3,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./routes/ProtectedRoute";
-import { AuthProvider } from "./context/AuthContext";
+// import { AuthProvider } from "./context/AuthContext";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -13,7 +13,7 @@ const App = () => {
   return (
     <>
       <ToastContainer position="top-right" autoClose={3000} />
-      <AuthProvider>
+      {/* <AuthProvider> */}
         <Router>
           <Routes>
             <Route path="/login" element={<Login />} />
@@ -36,7 +36,7 @@ const App = () => {
             />
           </Routes>
         </Router>
-      </AuthProvider>
+      {/* </AuthProvider> */}
     </>
   );
 };

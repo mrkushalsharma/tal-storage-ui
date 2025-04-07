@@ -22,12 +22,12 @@ type FileItem = {
 
 const Files = () => {
   const [showModal, setShowModal] = useState(false);
-  const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedFile, setSelectedFile] = useState<any>(null);
   const { handleRequest } = apiService();
   const [showShareModal, setShowShareModal] = useState(false);
   const [searchText, setSearchText] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
-  const [selectedFileForShare, setSelectedFileForShare] = useState(null);
+  const [searchResults, setSearchResults] = useState<any>([]);
+  const [selectedFileForShare, setSelectedFileForShare] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -68,7 +68,7 @@ const Files = () => {
       await FileUploadService.postApiFileUploadShare({
         fileId: selectedFileForShare.id,
         sharedWith: email,
-        fileAccessAs: 0,
+        fileAccessAs: 1,
       });
 
       alert("File shared successfully!");
@@ -202,7 +202,7 @@ const Files = () => {
                             key={i}
                             className="badge bg-info text-dark me-1"
                           >
-                            {entry.sharedWith}
+                            {entry?.user?.email} ({entry?.user?.fullName})
                           </span>
                         ))
                       ) : (
@@ -214,19 +214,29 @@ const Files = () => {
                         className="btn btn-sm btn-primary me-2"
                         onClick={() => handleDownload(file.s3Url)}
                       >
-                        {isDownloading ? "Downloading..." : "Download"}
+                        {isDownloading ? (
+                          <span
+                            className="spinner-border spinner-border-sm"
+                            role="status"
+                            aria-hidden="true"
+                          ></span>
+                        ) : (
+                          <i className="bi bi-download"></i>
+                        )}
                       </button>
+
                       <button
                         className="btn btn-sm btn-danger me-2"
                         onClick={() => handleDelete(file.id)}
                       >
-                        Delete
+                        <i className="bi bi-trash me-1"></i>
                       </button>
+
                       <button
                         className="btn btn-sm btn-secondary"
                         onClick={() => handleShare(file)}
                       >
-                        Share
+                        <i className="bi bi-share me-1"></i>
                       </button>
                     </td>
                   </tr>
@@ -310,7 +320,7 @@ const Files = () => {
                   onKeyDown={(e) => e.key === "Enter" && handleSearchUsers()}
                 />
                 <ul className="list-group mt-2">
-                  {searchResults.map((user) => (
+                  {searchResults.map((user: any) => (
                     <li
                       key={user.id}
                       className="list-group-item list-group-item-action"
